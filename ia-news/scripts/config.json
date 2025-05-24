@@ -1,0 +1,14 @@
+{
+  "github": {
+    "username": "victorVirginio",
+    "repo_name": "ia-news",
+    "branch": "main"
+  },
+  "paths": {
+    "pending": "../dados/pendentes/",
+    "approved": "../dados/aprovados/",
+    "site": "../site/"
+  },
+  "auto_deploy": true,
+  "review_interface": "review.html"
+}

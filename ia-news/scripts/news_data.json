@@ -1,0 +1,47 @@
+{
+  "news": [
+    {
+      "id": 3,
+      "title": "Microsoft integra IA avançada no Office 365",
+      "summary": "Copilot Pro automatiza tarefas complexas do Office",
+      "content": "Microsoft revelou integração ambiciosa de IA...",
+      "source": "Microsoft Blog",
+      "url": "https://microsoft.com/example",
+      "quality_score": 7.8,
+      "timestamp": "2025-05-24T23:04:48.316014",
+      "status": "pending",
+      "category": "business"
+    },
+    {
+      "id": 2,
+      "title": "Google DeepMind prevê terremotos com 85% de precisão",
+      "summary": "IA capaz de prever terremotos pode salvar vidas",
+      "content": "Pesquisadores desenvolveram sistema revolucionário...",
+      "source": "Nature",
+      "url": "https://nature.com/example",
+      "quality_score": 8.7,
+      "timestamp": "2025-05-24T23:04:48.316007",
+      "status": "pending",
+      "category": "research"
+    },
+    {
+      "id": 1,
+      "title": "OpenAI lança GPT-5 com capacidades revolucionárias",
+      "summary": "Nova versão promete avanços em raciocínio e matemática",
+      "content": "A OpenAI anunciou oficialmente o GPT-5...",
+      "source": "TechCrunch",
+      "url": "https://techcrunch.com/example",
+      "quality_score": 9.2,
+      "timestamp": "2025-05-24T23:04:48.315948",
+      "status": "pending",
+      "category": "releases"
+    }
+  ],
+  "stats": {
+    "total": 3,
+    "pending": 3,
+    "approved": 0,
+    "rejected": 0
+  },
+  "last_update": "2025-05-24T23:04:48.376921"
+}

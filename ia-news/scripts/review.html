@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📰 Revisão de Notícias - IA News</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 30px;
+            background: #f8f9fa;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            border-left: 4px solid #3498db;
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .controls {
+            padding: 20px 30px;
+            background: white;
+            border-bottom: 1px solid #eee;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border: 2px solid #3498db;
+            background: white;
+            color: #3498db;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .filter-btn.active,
+        .filter-btn:hover {
+            background: #3498db;
+            color: white;
+        }
+
+        .news-grid {
+            padding: 30px;
+            display: grid;
+            gap: 25px;
+        }
+
+        .news-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid #eee;
+        }
+
+        .news-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+
+        .news-header {
+            padding: 20px 25px 15px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .news-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .news-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .quality-score {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 500;
+        }
+
+        .score-high { color: #27ae60; }
+        .score-medium { color: #f39c12; }
+        .score-low { color: #e74c3c; }
+
+        .source {
+            background: #ecf0f1;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            color: #7f8c8d;
+        }
+
+        .news-summary {
+            padding: 0 25px 20px;
+            color: #7f8c8d;
+            line-height: 1.6;
+        }
+
+        .news-actions {
+            padding: 20px 25px;
+            background: #f8f9fa;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .action-btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95em;
+        }
+
+        .approve-btn {
+            background: #27ae60;
+            color: white;
+        }
+
+        .approve-btn:hover {
+            background: #229954;
+            transform: translateY(-2px);
+        }
+
+        .reject-btn {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .reject-btn:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+
+        .read-more-btn {
+            background: #3498db;
+            color: white;
+            padding: 8px 20px;
+            font-size: 0.85em;
+        }
+
+        .read-more-btn:hover {
+            background: #2980b9;
+        }
+
+        .news-content {
+            display: none;
+            padding: 20px 25px;
+            background: #fafafa;
+            border-top: 1px solid #eee;
+            line-height: 1.7;
+            color: #34495e;
+        }
+
+        .news-content.expanded {
+            display: block;
+        }
+
+        .bulk-actions {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .bulk-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+        }
+
+        .bulk-approve {
+            background: #27ae60;
+            color: white;
+        }
+
+        .bulk-reject {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .bulk-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 30px;
+            color: #7f8c8d;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .news-actions {
+                flex-direction: column;
+            }
+            
+            .filter-buttons {
+                justify-content: center;
+            }
+            
+            .bulk-actions {
+                bottom: 15px;
+                right: 15px;
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 IA News - Revisão Diária</h1>
+            <p>Revise e aprove as notícias de hoje sobre Inteligência Artificial</p>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number" id="totalNews">8</div>
+                <div class="stat-label">Notícias Hoje</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="approvedNews">0</div>
+                <div class="stat-label">Aprovadas</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="rejectedNews">0</div>
+                <div class="stat-label">Rejeitadas</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="pendingNews">8</div>
+                <div class="stat-label">Pendentes</div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">📋 Todas</button>
+                <button class="filter-btn" data-filter="high">⭐ Nota Alta (8+)</button>
+                <button class="filter-btn" data-filter="medium">⚡ Nota Média (6-7)</button>
+                <button class="filter-btn" data-filter="low">⚠️ Nota Baixa (<6)</button>
+            </div>
+        </div>
+
+        <div class="news-grid" id="newsGrid">
+            <!-- Notícias serão inseridas aqui pelo JavaScript -->
+        </div>
+
+        <div class="bulk-actions">
+            <button class="bulk-btn bulk-approve" title="Aprovar todas visíveis" onclick="bulkApprove()">
+                ✓
+            </button>
+            <button class="bulk-btn bulk-reject" title="Rejeitar todas visíveis" onclick="bulkReject()">
+                ✗
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Dados de exemplo (na versão real, viriam do GitHub)
+        const sampleNews = [
+            {
+                id: 1,
+                title: "OpenAI anuncia GPT-5 com capacidades revolucionárias de raciocínio",
+                summary: "A OpenAI revelou seu novo modelo de linguagem GPT-5, que promete avanços significativos em raciocínio lógico e matemático, superando limitações anteriores.",
+                content: "A OpenAI anunciou oficialmente o GPT-5, seu mais avançado modelo de inteligência artificial até hoje. O novo modelo demonstra capacidades impressionantes de raciocínio complexo, resolução de problemas matemáticos avançados e compreensão contextual profunda. Durante os testes internos, o GPT-5 mostrou melhorias de 40% em tarefas de raciocínio comparado ao GPT-4. A empresa planeja lançar o modelo em versão beta no próximo trimestre.",
+                source: "TechCrunch",
+                quality: 9.2,
+                time: "2h atrás",
+                status: "pending"
+            },
+            {
+                id: 2,
+                title: "Google DeepMind desenvolve IA que pode prever terremotos com 85% de precisão",
+                summary: "Pesquisadores do Google DeepMind criaram um sistema de IA capaz de prever terremotos com precisão sem precedentes, potencialmente salvando milhares de vidas.",
+                content: "Cientistas do Google DeepMind publicaram um estudo revolucionário mostrando que sua nova IA pode prever terremotos com 85% de precisão até 7 dias antes do evento. O sistema analisa padrões sísmicos, dados geológicos e mudanças magnéticas para fazer suas previsões. A tecnologia já está sendo testada no Japão e Califórnia em parceria com institutos de pesquisa locais.",
+                source: "Nature",
+                quality: 8.7,
+                time: "4h atrás",
+                status: "pending"
+            },
+            {
+                id: 3,
+                title: "Microsoft integra IA avançada no Office 365 para automatizar tarefas complexas",
+                summary: "A Microsoft anunciou uma grande atualização do Office 365 com recursos de IA que podem automatizar criação de apresentações, análise de dados e redação de emails.",
+                content: "A Microsoft revelou sua mais ambiciosa integração de IA no Office 365, introduzindo o 'Copilot Pro'. O novo sistema pode criar apresentações completas do PowerPoint a partir de uma simples descrição, analisar planilhas complexas do Excel e sugerir insights, além de redigir emails profissionais no Outlook. A funcionalidade estará disponível para assinantes Premium a partir do próximo mês.",
+                source: "Microsoft Blog",
+                quality: 7.8,
+                time: "6h atrás",
+                status: "pending"
+            },
+            {
+                id: 4,
+                title: "Startup brasileira cria IA que detecta fake news com 94% de precisão",
+                summary: "Uma startup de São Paulo desenvolveu um algoritmo de IA capaz de identificar notícias falsas em português com alta precisão, analisando padrões linguísticos.",
+                content: "A startup paulista 'TruthIA' desenvolveu um sistema revolucionário que detecta fake news em português com 94% de precisão. A IA analisa padrões linguísticos, verifica fontes e cruza informações em tempo real. O sistema já está sendo testado por grandes portais de notícias brasileiros e deve ser lançado publicamente no próximo semestre.",
+                source: "Folha de S.Paulo",
+                quality: 8.1,
+                time: "8h atrás",
+                status: "pending"
+            },
+            {
+                id: 5,
+                title: "Apple revela chips M4 com processamento de IA 3x mais rápido",
+                summary: "A Apple anunciou seus novos chips M4 que prometem revolucionar o processamento de IA em dispositivos móveis com eficiência energética superior.",
+                content: "Durante seu evento anual, a Apple revelou os chips M4, projetados especificamente para processamento de IA. Os novos chips oferecem performance 3x superior em tarefas de machine learning comparado à geração anterior, mantendo baixo consumo energético. Os primeiros dispositivos com M4 chegam ao mercado no final do ano.",
+                source: "Apple Newsroom",
+                quality: 7.5,
+                time: "10h atrás",
+                status: "pending"
+            },
+            {
+                id: 6,
+                title: "Pesquisadores criam IA que pode 'ler mentes' através de ressonância magnética",
+                summary: "Cientistas desenvolveram uma IA capaz de interpretar pensamentos humanos através de imagens de ressonância magnética com precisão impressionante.",
+                content: "Uma equipe internacional de pesquisadores desenvolveu uma IA que pode interpretar pensamentos humanos básicos através de dados de ressonância magnética funcional. O sistema consegue identificar se uma pessoa está pensando em objetos específicos, cores ou até mesmo palavras simples. Embora ainda preliminar, a tecnologia abre possibilidades para comunicação com pacientes em estado vegetativo.",
+                source: "Science Journal",
+                quality: 9.0,
+                time: "12h atrás",
+                status: "pending"
+            },
+            {
+                id: 7,
+                title: "Tesla anuncia robô humanoide Optimus para uso doméstico por $20.000",
+                summary: "Elon Musk revelou que o robô humanoide Optimus da Tesla será vendido para consumidores finais por aproximadamente $20.000 a partir de 2026.",
+                content: "Durante a apresentação 'AI Day 2024', Elon Musk anunciou que o robô humanoide Optimus será comercializado para uso doméstico por cerca de $20.000. O robô pode realizar tarefas domésticas básicas como limpeza, organização e até mesmo cuidar de idosos. A Tesla planeja produção em massa para 2026, com pré-vendas iniciando no próximo ano.",
+                source: "Tesla Blog",
+                quality: 6.8,
+                time: "14h atrás",
+                status: "pending"
+            },
+            {
+                id: 8,
+                title: "União Europeia aprova primeira lei abrangente de regulamentação de IA",
+                summary: "O Parlamento Europeu aprovou o AI Act, a primeira legislação abrangente do mundo para regular o desenvolvimento e uso de inteligência artificial.",
+                content: "O Parlamento Europeu aprovou oficialmente o AI Act, estabelecendo regras rigorosas para o desenvolvimento e uso de IA na União Europeia. A lei categoriza sistemas de IA por níveis de risco e estabelece penalidades de até 6% da receita anual para empresas que violarem as normas. A legislação entra em vigor gradualmente nos próximos dois anos.",
+                source: "Reuters",
+                quality: 8.5,
+                time: "16h atrás",
+                status: "pending"
+            }
+        ];
+
+        let currentFilter = 'all';
+        let newsData = [...sampleNews];
+        let stats = {
+            total: newsData.length,
+            approved: 0,
+            rejected: 0,
+            pending: newsData.length
+        };
+
+        function updateStats() {
+            document.getElementById('totalNews').textContent = stats.total;
+            document.getElementById('approvedNews').textContent = stats.approved;
+            document.getElementById('rejectedNews').textContent = stats.rejected;
+            document.getElementById('pendingNews').textContent = stats.pending;
+        }
+
+        function getQualityClass(score) {
+            if (score >= 8) return 'score-high';
+            if (score >= 6) return 'score-medium';
+            return 'score-low';
+        }
+
+        function getQualityStars(score) {
+            const stars = Math.round(score / 2);
+            return '⭐'.repeat(stars);
+        }
+
+        function renderNews() {
+            const grid = document.getElementById('newsGrid');
+            const filteredNews = newsData.filter(news => {
+                if (news.status !== 'pending') return false;
+                
+                switch(currentFilter) {
+                    case 'high': return news.quality >= 8;
+                    case 'medium': return news.quality >= 6 && news.quality < 8;
+                    case 'low': return news.quality < 6;
+                    default: return true;
+                }
+            });
+
+            if (filteredNews.length === 0) {
+                grid.innerHTML = `
+                    <div class="empty-state">
+                        <h3>🎉 Nenhuma notícia pendente!</h3>
+                        <p>Você já revisou todas as notícias desta categoria.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = filteredNews.map(news => `
+                <div class="news-card" data-id="${news.id}">
+                    <div class="news-header">
+                        <h3 class="news-title">${news.title}</h3>
+                        <div class="news-meta">
+                            <div class="quality-score ${getQualityClass(news.quality)}">
+                                ${getQualityStars(news.quality)} ${news.quality}/10
+                            </div>
+                            <div class="source">${news.source} • ${news.time}</div>
+                        </div>
+                        <p class="news-summary">${news.summary}</p>
+                        <button class="action-btn read-more-btn" onclick="toggleContent(${news.id})">
+                            📖 Ler Completo
+                        </button>
+                    </div>
+                    
+                    <div class="news-content" id="content-${news.id}">
+                        ${news.content}
+                    </div>
+                    
+                    <div class="news-actions">
+                        <button class="action-btn approve-btn" onclick="approveNews(${news.id})">
+                            ✅ Aprovar
+                        </button>
+                        <button class="action-btn reject-btn" onclick="rejectNews(${news.id})">
+                            ❌ Rejeitar
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function toggleContent(id) {
+            const content = document.getElementById(`content-${id}`);
+            const btn = content.previousElementSibling.querySelector('.read-more-btn');
+            
+            if (content.classList.contains('expanded')) {
+                content.classList.remove('expanded');
+                btn.textContent = '📖 Ler Completo';
+            } else {
+                content.classList.add('expanded');
+                btn.textContent = '📖 Recolher';
+            }
+        }
+
+        function approveNews(id) {
+            const newsIndex = newsData.findIndex(news => news.id === id);
+            if (newsIndex !== -1) {
+                newsData[newsIndex].status = 'approved';
+                stats.approved++;
+                stats.pending--;
+                updateStats();
+                renderNews();
+                
+                // Animação de feedback
+                showNotification('✅ Notícia aprovada!', 'success');
+            }
+        }
+
+        function rejectNews(id) {
+            const newsIndex = newsData.findIndex(news => news.id === id);
+            if (newsIndex !== -1) {
+                newsData[newsIndex].status = 'rejected';
+                stats.rejected++;
+                stats.pending--;
+                updateStats();
+                renderNews();
+                
+                // Animação de feedback
+                showNotification('❌ Notícia rejeitada!', 'error');
+            }
+        }
+
+        function bulkApprove() {
+            const visibleNews = newsData.filter(news => {
+                if (news.status !== 'pending') return false;
+                
+                switch(currentFilter) {
+                    case 'high': return news.quality >= 8;
+                    case 'medium': return news.quality >= 6 && news.quality < 8;
+                    case 'low': return news.quality < 6;
+                    default: return true;
+                }
+            });
+
+            visibleNews.forEach(news => {
+                news.status = 'approved';
+                stats.approved++;
+                stats.pending--;
+            });
+
+            updateStats();
+            renderNews();
+            showNotification(`✅ ${visibleNews.length} notícias aprovadas!`, 'success');
+        }
+
+        function bulkReject() {
+            const visibleNews = newsData.filter(news => {
+                if (news.status !== 'pending') return false;
+                
+                switch(currentFilter) {
+                    case 'high': return news.quality >= 8;
+                    case 'medium': return news.quality >= 6 && news.quality < 8;
+                    case 'low': return news.quality < 6;
+                    default: return true;
+                }
+            });
+
+            visibleNews.forEach(news => {
+                news.status = 'rejected';
+                stats.rejected++;
+                stats.pending--;
+            });
+
+            updateStats();
+            renderNews();
+            showNotification(`❌ ${visibleNews.length} notícias rejeitadas!`, 'error');
+        }
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 15px 25px;
+                border-radius: 10px;
+                color: white;
+                font-weight: 600;
+                z-index: 1000;
+                animation: slideIn 0.3s ease;
+                background: ${type === 'success' ? '#27ae60' : '#e74c3c'};
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Event listeners para filtros
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentFilter = btn.dataset.filter;
+                renderNews();
+            });
+        });
+
+        // Inicialização
+        updateStats();
+        renderNews();
+
+        // Adicionar CSS para animação
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
