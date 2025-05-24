@@ -15,8 +15,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
             color: #2c3e50;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+            background: #f8fafc;
         }
 
         .container {
@@ -27,8 +26,8 @@
 
         /* Header */
         header {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
+            background: linear-gradient(135deg, #1e40af, #3b82f6);
+            color: white;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
             position: sticky;
             top: 0;
@@ -47,7 +46,8 @@
             align-items: center;
             font-size: 2rem;
             font-weight: bold;
-            color: #3b82f6;
+            color: white;
+            text-decoration: none;
         }
 
         .logo::before {
@@ -63,192 +63,170 @@
         }
 
         .nav-links a {
+            color: white;
             text-decoration: none;
-            color: #4b5563;
             font-weight: 500;
-            transition: color 0.3s ease;
+            transition: opacity 0.3s ease;
         }
 
         .nav-links a:hover {
-            color: #3b82f6;
+            opacity: 0.8;
         }
 
-        /* Hero Section */
-        .hero {
-            text-align: center;
-            padding: 4rem 0;
-            color: white;
+        /* Main Layout */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 2rem;
+            padding: 2rem 0;
         }
 
-        .hero h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        .hero p {
-            font-size: 1.3rem;
-            margin-bottom: 2rem;
-            opacity: 0.9;
-        }
-
-        .cta-button {
-            display: inline-block;
-            background: #3b82f6;
-            color: white;
-            padding: 1rem 2rem;
-            text-decoration: none;
-            border-radius: 50px;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
-        }
-
-        .cta-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 25px rgba(59, 130, 246, 0.6);
-        }
-
-        /* Main Content */
-        main {
+        .content-area {
             background: white;
-            margin: 2rem 0;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             overflow: hidden;
         }
 
-        .section-header {
-            background: linear-gradient(135deg, #3b82f6, #1e40af);
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* Hero Banner */
+        .hero-banner {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 2rem;
-            text-align: center;
-        }
-
-        .section-header h2 {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .section-header p {
-            opacity: 0.9;
-            font-size: 1.1rem;
-        }
-
-        /* Stats */
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 2rem;
             padding: 3rem 2rem;
-            background: #f8fafc;
-        }
-
-        .stat-card {
             text-align: center;
-            padding: 2rem;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease;
         }
 
-        .stat-card:hover {
-            transform: translateY(-5px);
+        .hero-banner h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
         }
 
-        .stat-number {
-            font-size: 3rem;
-            font-weight: bold;
-            color: #3b82f6;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-label {
-            color: #6b7280;
-            font-weight: 500;
+        .hero-banner p {
+            font-size: 1.1rem;
+            opacity: 0.9;
         }
 
         /* News Grid */
         .news-section {
-            padding: 3rem 2rem;
+            padding: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            color: #1e40af;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid #3b82f6;
+            display: inline-block;
         }
 
         .news-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
+            gap: 1.5rem;
         }
 
         .news-card {
+            display: flex;
             background: white;
-            border-radius: 15px;
+            border-radius: 10px;
             overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
+            cursor: pointer;
             border: 2px solid transparent;
         }
 
         .news-card:hover {
-            transform: translateY(-5px);
-            border-color: #3b82f6;
+            transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(59, 130, 246, 0.2);
+            border-color: #3b82f6;
         }
 
-        .news-header {
+        .news-card.featured {
+            grid-column: 1 / -1;
+        }
+
+        .news-card.featured .news-image {
+            width: 400px;
+            height: 250px;
+        }
+
+        .news-image {
+            width: 200px;
+            height: 140px;
             background: linear-gradient(135deg, #3b82f6, #1e40af);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             color: white;
+            font-size: 2rem;
+            flex-shrink: 0;
+        }
+
+        .news-content {
             padding: 1.5rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .news-meta {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+
+        .news-source {
+            background: #3b82f6;
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .news-quality {
+            background: #10b981;
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
         }
 
         .news-title {
             font-size: 1.3rem;
             font-weight: bold;
-            margin-bottom: 0.5rem;
+            color: #1e40af;
+            margin-bottom: 0.8rem;
+            line-height: 1.4;
         }
 
-        .news-meta {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.9rem;
-            opacity: 0.9;
-        }
-
-        .news-quality {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-weight: bold;
-        }
-
-        .news-content {
-            padding: 1.5rem;
+        .news-card.featured .news-title {
+            font-size: 1.6rem;
         }
 
         .news-summary {
             color: #4b5563;
             margin-bottom: 1rem;
-            line-height: 1.6;
-        }
-
-        .news-source {
-            display: inline-block;
-            background: #e5e7eb;
-            color: #374151;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 500;
+            flex: 1;
         }
 
         .read-more {
-            display: inline-block;
             color: #3b82f6;
-            text-decoration: none;
             font-weight: bold;
-            margin-top: 1rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
             transition: color 0.3s ease;
         }
 
@@ -256,295 +234,533 @@
             color: #1e40af;
         }
 
+        /* Sidebar Widgets */
+        .widget {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .widget-header {
+            background: #1e40af;
+            color: white;
+            padding: 1rem;
+            font-weight: bold;
+        }
+
+        .widget-content {
+            padding: 1rem;
+        }
+
+        .stats-widget .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .stats-widget .stat-item:last-child {
+            border-bottom: none;
+        }
+
+        .stat-number {
+            font-weight: bold;
+            color: #3b82f6;
+        }
+
+        .trending-item {
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .trending-item:last-child {
+            border-bottom: none;
+        }
+
+        .trending-title {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #374151;
+            line-height: 1.4;
+        }
+
+        .trending-meta {
+            font-size: 0.8rem;
+            color: #6b7280;
+            margin-top: 0.3rem;
+        }
+
+        /* Article Page */
+        .article-page {
+            display: none;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .article-header {
+            padding: 2rem;
+            background: linear-gradient(135deg, #1e40af, #3b82f6);
+            color: white;
+        }
+
+        .back-button {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-bottom: 1rem;
+            transition: background 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .article-title {
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+            line-height: 1.3;
+        }
+
+        .article-meta {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .article-content {
+            padding: 2rem;
+        }
+
+        .article-image {
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(135deg, #3b82f6, #1e40af);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .article-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #374151;
+        }
+
+        .article-text p {
+            margin-bottom: 1.5rem;
+        }
+
+        /* Related Articles */
+        .related-articles {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e5e7eb;
+        }
+
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .related-card {
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .related-card:hover {
+            background: #e5e7eb;
+        }
+
+        .related-title {
+            font-weight: bold;
+            color: #1e40af;
+            margin-bottom: 0.5rem;
+        }
+
+        .related-summary {
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+
         /* Footer */
         footer {
             background: #1f2937;
             color: white;
             text-align: center;
-            padding: 3rem 0;
-            margin-top: 4rem;
-        }
-
-        .footer-content {
-            margin-bottom: 2rem;
-        }
-
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .footer-links a {
-            color: #9ca3af;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        .footer-links a:hover {
-            color: #3b82f6;
+            padding: 2rem 0;
+            margin-top: 3rem;
         }
 
         /* Responsive */
         @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2.5rem;
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .news-card {
+                flex-direction: column;
+            }
+
+            .news-card .news-image,
+            .news-card.featured .news-image {
+                width: 100%;
+                height: 200px;
+            }
+
+            .hero-banner h1 {
+                font-size: 2rem;
             }
 
             .nav-links {
                 display: none;
             }
-
-            .news-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .stats {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        /* Loading Animation */
-        .loading {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 3rem;
-        }
-
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid #e5e7eb;
-            border-top: 4px solid #3b82f6;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
     <header>
         <nav class="container">
-            <div class="logo">IA News</div>
+            <a href="#" class="logo" onclick="showHomePage()">IA News</a>
             <ul class="nav-links">
-                <li><a href="#home">Início</a></li>
-                <li><a href="#noticias">Notícias</a></li>
+                <li><a href="#" onclick="showHomePage()">Início</a></li>
+                <li><a href="#tecnologia">Tecnologia</a></li>
+                <li><a href="#pesquisa">Pesquisa</a></li>
+                <li><a href="#empresas">Empresas</a></li>
                 <li><a href="#sobre">Sobre</a></li>
-                <li><a href="#contato">Contato</a></li>
             </ul>
         </nav>
     </header>
 
-    <section class="hero" id="home">
-        <div class="container">
-            <h1>IA News</h1>
-            <p>Seu portal de notícias sobre Inteligência Artificial em português</p>
-            <a href="#noticias" class="cta-button">Ver Últimas Notícias</a>
-        </div>
-    </section>
-
-    <main class="container">
-        <div class="section-header">
-            <h2>Estatísticas de Hoje</h2>
-            <p>Acompanhe nossa cobertura em tempo real</p>
-        </div>
-
-        <div class="stats">
-            <div class="stat-card">
-                <div class="stat-number" id="total-news">8</div>
-                <div class="stat-label">Notícias Hoje</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="approved-news">5</div>
-                <div class="stat-label">Publicadas</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="avg-quality">8.7</div>
-                <div class="stat-label">Nota Média</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" id="total-views">1.2k</div>
-                <div class="stat-label">Visualizações</div>
-            </div>
-        </div>
-
-        <div class="news-section" id="noticias">
-            <div class="section-header">
-                <h2>Últimas Notícias</h2>
-                <p>As principais novidades do mundo da IA, traduzidas e curadas para você</p>
+    <div class="container">
+        <!-- HOME PAGE -->
+        <div id="home-page">
+            <div class="hero-banner">
+                <h1>IA News</h1>
+                <p>As principais notícias sobre Inteligência Artificial em português</p>
             </div>
 
-            <div id="news-container">
-                <div class="loading">
-                    <div class="spinner"></div>
+            <div class="main-layout">
+                <div class="content-area">
+                    <div class="news-section">
+                        <h2 class="section-title">Últimas Notícias</h2>
+                        <div class="news-grid" id="news-grid">
+                            <!-- Notícias serão carregadas aqui -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sidebar">
+                    <!-- Widget de Estatísticas -->
+                    <div class="widget stats-widget">
+                        <div class="widget-header">📊 Estatísticas</div>
+                        <div class="widget-content">
+                            <div class="stat-item">
+                                <span>Notícias Hoje</span>
+                                <span class="stat-number">8</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>Publicadas</span>
+                                <span class="stat-number">5</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>Nota Média</span>
+                                <span class="stat-number">8.7</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>Visualizações</span>
+                                <span class="stat-number">1.2k</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Widget de Tendências -->
+                    <div class="widget">
+                        <div class="widget-header">🔥 Em Alta</div>
+                        <div class="widget-content">
+                            <div class="trending-item">
+                                <div class="trending-title">GPT-5 bate novos recordes de performance</div>
+                                <div class="trending-meta">243 visualizações</div>
+                            </div>
+                            <div class="trending-item">
+                                <div class="trending-title">Google anuncia Gemini 2.0</div>
+                                <div class="trending-meta">198 visualizações</div>
+                            </div>
+                            <div class="trending-item">
+                                <div class="trending-title">IA diagnostica câncer precocemente</div>
+                                <div class="trending-meta">176 visualizações</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Widget de Categorias -->
+                    <div class="widget">
+                        <div class="widget-header">📂 Categorias</div>
+                        <div class="widget-content">
+                            <div class="trending-item">
+                                <div class="trending-title">🔬 Pesquisa & Desenvolvimento</div>
+                                <div class="trending-meta">12 artigos</div>
+                            </div>
+                            <div class="trending-item">
+                                <div class="trending-title">🏢 Empresas & Startups</div>
+                                <div class="trending-meta">8 artigos</div>
+                            </div>
+                            <div class="trending-item">
+                                <div class="trending-title">🎯 Aplicações Práticas</div>
+                                <div class="trending-meta">15 artigos</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </main>
+
+        <!-- ARTICLE PAGE -->
+        <div id="article-page" class="article-page">
+            <!-- Conteúdo do artigo será inserido dinamicamente -->
+        </div>
+    </div>
 
     <footer>
         <div class="container">
-            <div class="footer-content">
-                <h3>IA News</h3>
-                <p>Mantendo você informado sobre o futuro da Inteligência Artificial</p>
-            </div>
-            <div class="footer-links">
-                <a href="#sobre">Sobre</a>
-                <a href="#privacidade">Privacidade</a>
-                <a href="#termos">Termos</a>
-                <a href="#contato">Contato</a>
-            </div>
-            <p>&copy; 2025 IA News. Todos os direitos reservados.</p>
+            <p>&copy; 2025 IA News. Mantendo você informado sobre o futuro da Inteligência Artificial.</p>
         </div>
     </footer>
 
     <script>
-        // Simulação de dados (será substituído por dados reais)
+        // Dados das notícias (simulação - será substituído por dados reais)
         const newsData = [
             {
+                id: 1,
                 title: "OpenAI anuncia GPT-5 com capacidades revolucionárias",
                 summary: "A nova versão promete melhor raciocínio, maior precisão e capacidades multimodais avançadas, marcando um novo marco na evolução da IA generativa.",
+                content: `
+                    <p>A OpenAI revelou hoje o GPT-5, a mais nova iteração de seu modelo de linguagem de grande escala, prometendo capacidades que podem revolucionar o campo da inteligência artificial. Com melhorias significativas em raciocínio, precisão e funcionalidades multimodais, o GPT-5 representa um salto qualitativo em relação ao seu antecessor.</p>
+                    
+                    <p>Segundo Sam Altman, CEO da OpenAI, o novo modelo demonstra "capacidades de raciocínio que se aproximam do pensamento humano em muitas tarefas complexas". Os testes iniciais mostram melhorias de 40% na precisão de respostas e uma redução significativa nas alucinações - um dos principais desafios dos modelos anteriores.</p>
+                    
+                    <p>Entre as principais novidades estão:</p>
+                    <p><strong>• Raciocínio Avançado:</strong> Capacidade de resolver problemas matemáticos complexos e questões de lógica com precisão sem precedentes.</p>
+                    <p><strong>• Multimodalidade Aprimorada:</strong> Processamento simultâneo de texto, imagem, áudio e vídeo com compreensão contextual profunda.</p>
+                    <p><strong>• Personalização Dinâmica:</strong> Adaptação em tempo real ao estilo e preferências do usuário.</p>
+                    
+                    <p>O GPT-5 também introduz um novo sistema de "verificação interna" que permite ao modelo questionar suas próprias respostas antes de fornecê-las, resultando em maior confiabilidade e precisão. Esta funcionalidade é especialmente importante para aplicações críticas como saúde, educação e pesquisa científica.</p>
+                    
+                    <p>A versão beta do GPT-5 será disponibilizada para usuários do ChatGPT Plus a partir do próximo mês, com lançamento público previsto para o segundo trimestre de 2025. A OpenAI também anunciou parcerias com grandes empresas de tecnologia para integração do modelo em suas plataformas.</p>
+                `,
                 source: "TechCrunch",
                 quality: 9.2,
                 date: "2025-05-25",
-                time: "14:30"
+                time: "14:30",
+                category: "pesquisa",
+                featured: true
             },
             {
+                id: 2,
                 title: "Google DeepMind resolve problema complexo de física quântica",
                 summary: "Pesquisadores usaram IA para descobrir novas propriedades de materiais quânticos, acelerando a pesquisa em computação quântica.",
+                content: `
+                    <p>Em um avanço científico significativo, a equipe do Google DeepMind conseguiu resolver um problema fundamental da física quântica que intrigava cientistas há décadas. Utilizando técnicas avançadas de aprendizado de máquina, os pesquisadores descobriram novas propriedades de materiais quânticos que podem acelerar drasticamente o desenvolvimento da computação quântica.</p>
+                    
+                    <p>O estudo, publicado na revista Nature, demonstra como algoritmos de IA podem ser aplicados para compreender comportamentos complexos em sistemas quânticos de muitos corpos - um dos maiores desafios da física teórica moderna.</p>
+                    
+                    <p>"Esta descoberta não apenas avança nosso entendimento fundamental da mecânica quântica, mas também abre portas para aplicações práticas que antes pareciam impossíveis", explica Dr. Sarah Chen, pesquisadora principal do projeto.</p>
+                    
+                    <p>As implicações são vastas: desde o desenvolvimento de computadores quânticos mais eficientes até a criação de novos materiais com propriedades extraordinárias. A metodologia desenvolvida já está sendo aplicada em outras áreas da pesquisa quântica, prometendo acelerar descobertas que normalmente levariam anos para serem realizadas.</p>
+                `,
                 source: "Nature",
                 quality: 8.8,
                 date: "2025-05-25",
-                time: "12:15"
+                time: "12:15",
+                category: "pesquisa"
             },
             {
+                id: 3,
                 title: "Microsoft integra IA avançada ao Office 365",
                 summary: "Nova atualização traz assistentes inteligentes para Word, Excel e PowerPoint, prometendo revolucionar a produtividade corporativa.",
+                content: `
+                    <p>A Microsoft anunciou hoje uma integração massiva de inteligência artificial em todo o pacote Office 365, introduzindo assistentes inteligentes que prometem transformar a forma como trabalhamos com documentos, planilhas e apresentações.</p>
+                    
+                    <p>A nova funcionalidade, chamada "Office AI Copilot", utiliza modelos de linguagem avançados para oferecer sugestões inteligentes, automação de tarefas e geração de conteúdo em tempo real.</p>
+                    
+                    <p>No Word, o assistente pode ajudar na redação de documentos, sugerindo estruturas, corrigindo estilo e até mesmo gerando seções inteiras baseadas em prompts simples. No Excel, ele é capaz de criar fórmulas complexas, analisar dados e gerar relatórios automaticamente. Já no PowerPoint, pode criar apresentações completas a partir de tópicos ou documentos existentes.</p>
+                    
+                    <p>Segundo Satya Nadella, CEO da Microsoft, "estamos democratizando o acesso a capacidades que antes exigiam conhecimento técnico especializado. Agora, qualquer pessoa pode ser mais produtiva e criativa em seu trabalho".</p>
+                `,
                 source: "Microsoft Blog",
                 quality: 8.5,
                 date: "2025-05-25",
-                time: "10:45"
+                time: "10:45",
+                category: "empresas"
             },
             {
+                id: 4,
                 title: "Startup brasileira desenvolve IA para diagnóstico médico",
                 summary: "Empresa de São Paulo cria sistema que detecta doenças raras com 95% de precisão, superando métodos tradicionais de diagnóstico.",
+                content: `
+                    <p>Uma startup brasileira está chamando atenção internacional ao desenvolver um sistema de inteligência artificial capaz de diagnosticar doenças raras com precisão de 95%, superando significativamente os métodos tradicionais de diagnóstico médico.</p>
+                    
+                    <p>A MedIA, empresa sediada em São Paulo, criou uma plataforma que analisa exames de imagem, histórico médico e sintomas para identificar condições que frequentemente passam despercebidas por anos antes do diagnóstico correto.</p>
+                    
+                    <p>O sistema já foi testado em hospitais de três estados brasileiros, onde conseguiu identificar corretamente doenças que haviam sido mal diagnosticadas por meses ou anos. Em um caso documentado, a IA detectou uma condição neurológica rara em uma criança de 8 anos que havia passado por 12 médicos diferentes sem um diagnóstico definitivo.</p>
+                    
+                    <p>"Nosso objetivo é democratizar o acesso a diagnósticos de qualidade mundial, especialmente em regiões onde especialistas são escassos", explica Dr. Ricardo Santos, cofundador da MedIA.</p>
+                `,
                 source: "Folha de S.Paulo",
                 quality: 8.9,
                 date: "2025-05-25",
-                time: "09:20"
+                time: "09:20",
+                category: "aplicacoes"
             },
             {
+                id: 5,
                 title: "Tesla apresenta robô humanoide com IA avançada",
                 summary: "Optimus Gen-3 demonstra capacidades impressionantes de interação e execução de tarefas complexas em ambientes domésticos.",
+                content: `
+                    <p>A Tesla surpreendeu o mundo ao apresentar a terceira geração de seu robô humanoide Optimus, demonstrando capacidades que pareciam ficção científica apenas alguns anos atrás. O Optimus Gen-3 consegue realizar tarefas domésticas complexas, interagir naturalmente com humanos e até mesmo aprender novas habilidades observando exemplos.</p>
+                    
+                    <p>Durante a demonstração, o robô preparou café, dobrou roupas, organizou uma estante de livros e manteve conversas naturais com os presentes. Mais impressionante ainda foi sua capacidade de adaptar-se a situações imprevistas e resolver problemas em tempo real.</p>
+                    
+                    <p>Elon Musk, CEO da Tesla, afirmou que o Optimus representa "o futuro do trabalho doméstico e assistência pessoal". O robô utiliza a mesma tecnologia de IA que equipa os veículos autônomos da Tesla, adaptada para navegação e manipulação em ambientes internos.</p>
+                    
+                    <p>A Tesla planeja começar a produção limitada no final de 2025, com preço inicial estimado em $50,000, tornando-o potencialmente acessível para famílias de classe média alta.</p>
+                `,
                 source: "Reuters",
                 quality: 8.7,
                 date: "2025-05-25",
-                time: "08:00"
+                time: "08:00",
+                category: "empresas"
             }
         ];
 
-        // Função para carregar notícias
+        // Função para carregar notícias na página inicial
         function loadNews() {
-            const container = document.getElementById('news-container');
-            
-            setTimeout(() => {
-                const newsGrid = document.createElement('div');
-                newsGrid.className = 'news-grid';
+            const newsGrid = document.getElementById('news-grid');
+            newsGrid.innerHTML = '';
 
-                newsData.forEach(news => {
-                    const newsCard = document.createElement('div');
-                    newsCard.className = 'news-card';
-                    
-                    newsCard.innerHTML = `
-                        <div class="news-header">
-                            <div class="news-title">${news.title}</div>
-                            <div class="news-meta">
-                                <span>${news.time}</span>
-                                <span class="news-quality">★ ${news.quality}</span>
-                            </div>
-                        </div>
-                        <div class="news-content">
-                            <p class="news-summary">${news.summary}</p>
+            newsData.forEach((news, index) => {
+                const newsCard = document.createElement('div');
+                newsCard.className = `news-card ${news.featured ? 'featured' : ''}`;
+                newsCard.onclick = () => showArticle(news.id);
+                
+                const icon = getIconByCategory(news.category);
+                
+                newsCard.innerHTML = `
+                    <div class="news-image">${icon}</div>
+                    <div class="news-content">
+                        <div class="news-meta">
                             <span class="news-source">${news.source}</span>
-                            <a href="#" class="read-more">Ler mais →</a>
+                            <span class="news-quality">★ ${news.quality}</span>
+                            <span>${news.time}</span>
                         </div>
-                    `;
-                    
-                    newsGrid.appendChild(newsCard);
-                });
-
-                container.innerHTML = '';
-                container.appendChild(newsGrid);
-            }, 1500);
+                        <div class="news-title">${news.title}</div>
+                        <div class="news-summary">${news.summary}</div>
+                        <a href="#" class="read-more" onclick="event.preventDefault(); showArticle(${news.id})">
+                            Ler mais →
+                        </a>
+                    </div>
+                `;
+                
+                newsGrid.appendChild(newsCard);
+            });
         }
 
-        // Função para atualizar estatísticas
-        function updateStats() {
-            const approvedNews = newsData.length;
-            const avgQuality = (newsData.reduce((sum, news) => sum + news.quality, 0) / newsData.length).toFixed(1);
+        // Função para obter ícone por categoria
+        function getIconByCategory(category) {
+            const icons = {
+                pesquisa: '🔬',
+                empresas: '🏢',
+                aplicacoes: '🎯',
+                default: '🤖'
+            };
+            return icons[category] || icons.default;
+        }
+
+        // Função para mostrar artigo individual
+        function showArticle(newsId) {
+            const news = newsData.find(n => n.id === newsId);
+            if (!news) return;
+
+            const homePage = document.getElementById('home-page');
+            const articlePage = document.getElementById('article-page');
             
-            document.getElementById('approved-news').textContent = approvedNews;
-            document.getElementById('avg-quality').textContent = avgQuality;
+            // Esconder página inicial e mostrar artigo
+            homePage.style.display = 'none';
+            articlePage.style.display = 'block';
+            
+            // Gerar artigos relacionados
+            const relatedArticles = newsData
+                .filter(n => n.id !== newsId && n.category === news.category)
+                .slice(0, 3);
+            
+            const icon = getIconByCategory(news.category);
+            
+            articlePage.innerHTML = `
+                <div class="article-header">
+                    <button class="back-button" onclick="showHomePage()">← Voltar</button>
+                    <h1 class="article-title">${news.title}</h1>
+                    <div class="article-meta">
+                        <span class="news-source">${news.source}</span>
+                        <span class="news-quality">★ ${news.quality}</span>
+                        <span>${news.date} às ${news.time}</span>
+                    </div>
+                </div>
+                <div class="article-content">
+                    <div class="article-image">${icon}</div>
+                    <div class="article-text">
+                        ${news.content}
+                    </div>
+                    
+                    <div class="related-articles">
+                        <h3>Artigos Relacionados</h3>
+                        <div class="related-grid">
+                            ${relatedArticles.map(related => `
+                                <div class="related-card" onclick="showArticle(${related.id})">
+                                    <div class="related-title">${related.title}</div>
+                                    <div class="related-summary">${related.summary.substring(0, 100)}...</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Scroll para o topo
+            window.scrollTo(0, 0);
+        }
+
+        // Função para mostrar página inicial
+        function showHomePage() {
+            const homePage = document.getElementById('home-page');
+            const articlePage = document.getElementById('article-page');
+            
+            homePage.style.display = 'block';
+            articlePage.style.display = 'none';
+            
+            window.scrollTo(0, 0);
         }
 
         // Smooth scroll para links âncora
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-
-        // Inicializar página
-        document.addEventListener('DOMContentLoaded', function() {
-            loadNews();
-            updateStats();
-        });
-
-        // Animação de contadores
-        function animateCounters() {
-            const counters = document.querySelectorAll('.stat-number');
-            
-            counters.forEach(counter => {
-                const target = counter.textContent;
-                counter.textContent = '0';
-                
-                const increment = target / 20;
-                const timer = setInterval(() => {
-                    const current = parseFloat(counter.textContent);
-                    if (current < target) {
-                        counter.textContent = Math.ceil(current + increment);
-                    } else {
-                        counter.textContent = target;
-                        clearInterval(timer);
-                    }
-                }, 50);
-            });
-        }
-
-        // Observer para animações
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    animateCounters();
-                    observer.unobserve(entry.target);
-                }
-            });
-        });
-
-        observer.observe(document.querySelector('.stats'));
-    </script>
-</body>
-</html>
+                if (this.getAttribute('href') !== '#') {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
