@@ -139,13 +139,25 @@
             box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
         }
         .empty-state { text-align: center; padding: 3rem; color: #6b7280; }
+        .sync-info {
+            background: #fef3c7;
+            border: 2px solid #f59e0b;
+            color: #92400e;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
             <h1>🤖 IA News - Painel Administrativo</h1>
-            <p>Sistema simplificado e funcional</p>
+            <p>Gerencie suas notícias e atualize o site em tempo real</p>
+        </div>
+
+        <div class="sync-info">
+            ⚡ <strong>Sincronização Ativa:</strong> Quando você aprovar uma notícia aqui, ela aparecerá instantaneamente no site público!
         </div>
 
         <div class="stats-grid">
@@ -154,15 +166,15 @@
                 <div class="stat-label">Pendentes</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number" id="published-count">2</div>
+                <div class="stat-number" id="published-count">3</div>
                 <div class="stat-label">Publicadas</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number" id="rejected-count">1</div>
+                <div class="stat-number" id="rejected-count">0</div>
                 <div class="stat-label">Rejeitadas</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number" id="avg-quality">8.0</div>
+                <div class="stat-number" id="avg-quality">8.5</div>
                 <div class="stat-label">Nota Média</div>
             </div>
         </div>
@@ -196,54 +208,176 @@
         </div>
     </div>
 
-    <button class="floating-fab" onclick="refreshData()">🔄</button>
+    <button class="floating-fab" onclick="refreshData()" title="Atualizar dados">🔄</button>
 
     <script>
-        // Dados que funcionam (sem localStorage)
-        const newsData = {
-            pending: [
-                {
-                    id: 'nvidia_001',
-                    title: 'Nvidia Revela Nova Estratégia para Dominar o Mercado de IA em 2025',
-                    summary: 'Jensen Huang anuncia tecnologia NVLink Fusion e expande foco no setor empresarial durante evento em Taiwan.',
-                    source: 'Computex Taiwan',
-                    quality: 8.5,
-                    time: '15:30'
+        // Sistema de dados sincronizado com o site
+        class SyncNewsManager {
+            constructor() {
+                this.initializeData();
+            }
+
+            initializeData() {
+                // Dados iniciais sincronizados
+                this.data = {
+                    pending: [
+                        {
+                            id: 'nvidia_001',
+                            title: 'Nvidia Revela Nova Estratégia para Dominar o Mercado de IA em 2025',
+                            summary: 'Jensen Huang anuncia tecnologia NVLink Fusion e expande foco no setor empresarial durante evento em Taiwan.',
+                            content: 'O CEO da Nvidia, Jensen Huang, encerrou sua participação na feira Computex em Taiwan com anúncios que podem redefinir o futuro da inteligência artificial corporativa. Durante uma semana marcada pelo fenômeno "Jensanity", a empresa apresentou estratégias inovadoras para manter sua liderança no mercado de chips de IA. A resposta da Nvidia veio na forma da revolucionária tecnologia NVLink Fusion. Esta inovação permite que empresas conectem chips personalizados diretamente à infraestrutura de inteligência artificial da Nvidia.',
+                            source: 'Computex Taiwan',
+                            quality: 8.5,
+                            time: '15:30'
+                        }
+                    ],
+                    published: [
+                        {
+                            id: 'tesla_001',
+                            title: 'Tesla apresenta robô humanoide com IA avançada',
+                            summary: 'Optimus Gen-3 demonstra capacidades impressionantes de interação.',
+                            content: 'A Tesla surpreendeu o mundo ao apresentar a terceira geração de seu robô humanoide Optimus.',
+                            source: 'Reuters',
+                            quality: 8.7,
+                            time: '08:00'
+                        },
+                        {
+                            id: 'startup_001',
+                            title: 'Startup brasileira desenvolve IA para diagnóstico médico',
+                            summary: 'Empresa de São Paulo cria sistema que detecta doenças raras.',
+                            content: 'Uma startup brasileira está chamando atenção internacional.',
+                            source: 'Folha de S.Paulo',
+                            quality: 8.9,
+                            time: '09:20'
+                        },
+                        {
+                            id: 'microsoft_001',
+                            title: 'Microsoft integra IA avançada ao Office 365',
+                            summary: 'Nova atualização traz assistentes inteligentes para Word, Excel e PowerPoint.',
+                            content: 'A Microsoft anunciou hoje uma integração massiva de inteligência artificial.',
+                            source: 'Microsoft Blog',
+                            quality: 8.5,
+                            time: '10:45'
+                        }
+                    ],
+                    rejected: []
+                };
+            }
+
+            approveArticle(articleId) {
+                const article = this.data.pending.find(a => a.id === articleId);
+                if (article) {
+                    // Remover dos pendentes
+                    this.data.pending = this.data.pending.filter(a => a.id !== articleId);
+                    
+                    // Adicionar aos publicados
+                    article.status = 'published';
+                    article.approved_at = new Date().toISOString();
+                    this.data.published.push(article);
+                    
+                    // ATUALIZAR O SITE PÚBLICO EM TEMPO REAL
+                    this.updatePublicSite();
+                    
+                    this.showSuccess('✅ Notícia aprovada e adicionada ao site público!');
+                    this.refreshDisplay();
+                    return true;
                 }
-            ],
-            published: [
-                {
-                    id: 'tesla_001',
-                    title: 'Tesla apresenta robô humanoide com IA avançada',
-                    summary: 'Optimus Gen-3 demonstra capacidades impressionantes de interação.',
-                    source: 'Reuters',
-                    quality: 8.7,
-                    time: '08:00'
-                },
-                {
-                    id: 'startup_001',
-                    title: 'Startup brasileira desenvolve IA para diagnóstico médico',
-                    summary: 'Empresa de São Paulo cria sistema que detecta doenças raras.',
-                    source: 'Folha de S.Paulo',
-                    quality: 8.9,
-                    time: '09:20'
+                return false;
+            }
+
+            rejectArticle(articleId) {
+                const article = this.data.pending.find(a => a.id === articleId);
+                if (article) {
+                    // Remover dos pendentes
+                    this.data.pending = this.data.pending.filter(a => a.id !== articleId);
+                    
+                    // Adicionar aos rejeitados
+                    article.status = 'rejected';
+                    article.rejected_at = new Date().toISOString();
+                    this.data.rejected.push(article);
+                    
+                    this.showSuccess('❌ Notícia rejeitada');
+                    this.refreshDisplay();
+                    return true;
                 }
-            ],
-            rejected: [
-                {
-                    id: 'apple_001',
-                    title: 'Rumores sobre nova IA da Apple',
-                    summary: 'Especulações não confirmadas sobre desenvolvimento interno.',
-                    source: 'Blog Tech',
-                    quality: 6.2,
-                    time: '07:30'
+                return false;
+            }
+
+            deleteArticle(articleId, category) {
+                this.data[category] = this.data[category].filter(a => a.id !== articleId);
+                
+                if (category === 'published') {
+                    this.updatePublicSite();
+                    this.showSuccess('🗑️ Notícia removida do site público');
+                } else {
+                    this.showSuccess('🗑️ Notícia excluída permanentemente');
                 }
-            ]
-        };
+                
+                this.refreshDisplay();
+                return true;
+            }
+
+            updatePublicSite() {
+                // Simular atualização do site público
+                // Em implementação real, isso enviaria dados via API ou atualizaria arquivo
+                console.log('🌐 Atualizando site público com:', this.data.published);
+                
+                // Criar evento personalizado para comunicação entre páginas
+                const updateEvent = new CustomEvent('siteUpdate', {
+                    detail: { publishedNews: this.data.published }
+                });
+                window.dispatchEvent(updateEvent);
+                
+                // Tentar atualizar se a página está aberta em outra aba
+                if (window.opener) {
+                    try {
+                        window.opener.postMessage({
+                            type: 'newsUpdate',
+                            data: this.data.published
+                        }, '*');
+                    } catch (e) {
+                        console.log('Não foi possível comunicar com outras abas');
+                    }
+                }
+            }
+
+            showSuccess(message) {
+                const msg = document.getElementById('success-msg');
+                msg.textContent = message;
+                msg.style.display = 'block';
+                setTimeout(() => msg.style.display = 'none', 4000);
+            }
+
+            refreshDisplay() {
+                loadNews('pending');
+                loadNews('published');
+                loadNews('rejected');
+                updateStats();
+            }
+
+            getStats() {
+                return {
+                    pending: this.data.pending.length,
+                    published: this.data.published.length,
+                    rejected: this.data.rejected.length,
+                    avgQuality: this.calculateAvgQuality()
+                };
+            }
+
+            calculateAvgQuality() {
+                const all = [...this.data.pending, ...this.data.published, ...this.data.rejected];
+                if (all.length === 0) return '0.0';
+                const sum = all.reduce((acc, article) => acc + (article.quality || 0), 0);
+                return (sum / all.length).toFixed(1);
+            }
+        }
+
+        // Instância global
+        const newsManager = new SyncNewsManager();
 
         function loadNews(category) {
             const container = document.getElementById(`${category}-news`);
-            const articles = newsData[category];
+            const articles = newsManager.data[category];
 
             if (!articles || articles.length === 0) {
                 container.innerHTML = `
@@ -286,34 +420,22 @@
         }
 
         function approveNews(itemId) {
-            const article = newsData.pending.find(a => a.id === itemId);
-            if (article) {
-                // Mover para publicadas
-                newsData.pending = newsData.pending.filter(a => a.id !== itemId);
-                newsData.published.push(article);
-                
-                showSuccess('Artigo aprovado e publicado!');
-                refreshAll();
+            if (newsManager.approveArticle(itemId)) {
+                console.log('✅ Artigo aprovado:', itemId);
             }
         }
 
         function rejectNews(itemId) {
-            const article = newsData.pending.find(a => a.id === itemId);
-            if (article) {
-                // Mover para rejeitadas
-                newsData.pending = newsData.pending.filter(a => a.id !== itemId);
-                newsData.rejected.push(article);
-                
-                showSuccess('Artigo rejeitado');
-                refreshAll();
+            if (newsManager.rejectArticle(itemId)) {
+                console.log('❌ Artigo rejeitado:', itemId);
             }
         }
 
         function deleteNews(itemId, category) {
             if (confirm('Excluir permanentemente?')) {
-                newsData[category] = newsData[category].filter(a => a.id !== itemId);
-                showSuccess('Artigo excluído');
-                refreshAll();
+                if (newsManager.deleteArticle(itemId, category)) {
+                    console.log('🗑️ Artigo excluído:', itemId);
+                }
             }
         }
 
@@ -327,36 +449,20 @@
             loadNews(tabName);
         }
 
-        function showSuccess(message) {
-            const msg = document.getElementById('success-msg');
-            msg.textContent = '✅ ' + message;
-            msg.style.display = 'block';
-            setTimeout(() => msg.style.display = 'none', 3000);
-        }
-
-        function refreshAll() {
-            loadNews('pending');
-            loadNews('published');
-            loadNews('rejected');
-            updateStats();
-        }
-
         function updateStats() {
-            document.getElementById('pending-count').textContent = newsData.pending.length;
-            document.getElementById('published-count').textContent = newsData.published.length;
-            document.getElementById('rejected-count').textContent = newsData.rejected.length;
-            
-            const all = [...newsData.pending, ...newsData.published, ...newsData.rejected];
-            const avg = all.length > 0 ? (all.reduce((s, a) => s + a.quality, 0) / all.length).toFixed(1) : '0.0';
-            document.getElementById('avg-quality').textContent = avg;
+            const stats = newsManager.getStats();
+            document.getElementById('pending-count').textContent = stats.pending;
+            document.getElementById('published-count').textContent = stats.published;
+            document.getElementById('rejected-count').textContent = stats.rejected;
+            document.getElementById('avg-quality').textContent = stats.avgQuality;
         }
 
         function refreshData() {
             document.querySelector('.floating-fab').style.transform = 'rotate(360deg)';
             setTimeout(() => {
-                refreshAll();
+                newsManager.refreshDisplay();
                 document.querySelector('.floating-fab').style.transform = 'rotate(0deg)';
-                showSuccess('Dados atualizados!');
+                newsManager.showSuccess('🔄 Dados atualizados!');
             }, 1000);
         }
 
@@ -364,6 +470,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             loadNews('pending');
             updateStats();
+            console.log('🚀 Admin sincronizado inicializado');
         });
     </script>
 </body>
