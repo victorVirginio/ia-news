@@ -1,0 +1,189 @@
+name: IA News - Automação Completa
+
+on:
+  schedule:
+    # Coleta diária às 6h UTC (3h da manhã no Brasil)
+    - cron: '0 6 * * *'
+    # Publicação automática às 12h UTC (9h da manhã no Brasil) se não houve revisão
+    - cron: '0 12 * * *'
+    # Publicação das aprovadas a cada 30 minutos (das 12h às 17h UTC)
+    - cron: '0,30 12-17 * * *'
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Ação a executar'
+        required: true
+        default: 'collect'
+        type: choice
+        options:
+        - collect
+        - publish
+        - cleanup
+
+jobs:
+  collect-news:
+    if: github.event.schedule == '0 6 * * *' || (github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'collect')
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+        
+    - name: Install dependencies
+      run: |
+        pip install requests feedparser googletrans==4.0.0rc1 beautifulsoup4 lxml
+        
+    - name: Create directories
+      run: |
+        mkdir -p dados/pendentes
+        mkdir -p dados/aprovados
+        mkdir -p dados/rejeitados
+        
+    - name: Run news collection
+      run: |
+        cd scripts
+        python collect_news.py
+        
+    - name: Commit collected news
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add dados/pendentes/*.json || true
+        git add dados/processed_urls.json || true
+        if ! git diff --staged --quiet; then
+          git commit -m "🤖 Coleta automática de notícias - $(date '+%Y-%m-%d %H:%M')"
+          git push
+        fi
+
+  auto-publish:
+    if: github.event.schedule == '0 12 * * *' || (github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'publish')
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+        
+    - name: Install dependencies
+      run: |
+        pip install requests beautifulsoup4 lxml
+        
+    - name: Check for manual approvals
+      id: check_approvals
+      run: |
+        approved_count=$(find dados/aprovados -name "*.json" 2>/dev/null | wc -l)
+        echo "approved_count=$approved_count" >> $GITHUB_OUTPUT
+        
+    - name: Auto-approve best articles if no manual review
+      if: steps.check_approvals.outputs.approved_count == '0'
+      run: |
+        cd scripts
+        python auto_approve.py
+        
+    - name: Update website
+      run: |
+        cd scripts
+        python update_site.py
+        
+    - name: Commit website updates
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add .
+        if ! git diff --staged --quiet; then
+          git commit -m "📰 Atualização automática do site - $(date '+%Y-%m-%d %H:%M')"
+          git push
+        fi
+
+  scheduled-publish:
+    if: contains(github.event.schedule, '12-17')
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+        
+    - name: Install dependencies
+      run: |
+        pip install requests beautifulsoup4 lxml
+        
+    - name: Publish next article
+      run: |
+        cd scripts
+        python publish_next.py
+        
+    - name: Update website
+      run: |
+        cd scripts
+        python update_site.py
+        
+    - name: Commit updates
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add .
+        if ! git diff --staged --quiet; then
+          git commit -m "📰 Publicação programada - $(date '+%Y-%m-%d %H:%M')"
+          git push
+        fi
+
+  cleanup:
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'cleanup'
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Cleanup old files
+      run: |
+        # Remover arquivos rejeitados com mais de 7 dias
+        find dados/rejeitados -name "*.json" -mtime +7 -delete || true
+        
+        # Limitar arquivos processados (manter apenas últimos 1000)
+        if [ -f dados/processed_urls.json ]; then
+          python3 -c "
+import json
+try:
+    with open('dados/processed_urls.json', 'r') as f:
+        urls = json.load(f)
+    if len(urls) > 1000:
+        urls = urls[-1000:]
+        with open('dados/processed_urls.json', 'w') as f:
+            json.dump(urls, f)
+except:
+    pass
+"
+        fi
+        
+    - name: Commit cleanup
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add .
+        if ! git diff --staged --quiet; then
+          git commit -m "🧹 Limpeza automática de arquivos antigos"
+          git push
+        fi
