@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IA News - Painel Administrativo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 1rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #1e40af;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: #6b7280;
+            font-size: 1.1rem;
+        }
+
+        .admin-tabs {
+            display: flex;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            padding: 0.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
+        }
+
+        .tab-button {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            min-width: 150px;
+        }
+
+        .tab-button.active {
+            background: #3b82f6;
+            color: white;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .tab-button:not(.active) {
+            color: #6b7280;
+        }
+
+        .tab-button:hover:not(.active) {
+            background: #f3f4f6;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #3b82f6;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: #1e40af;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .news-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .news-item {
+            background: #f8fafc;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .news-item:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.1);
+        }
+
+        .news-header {
+            display: flex;
+            justify-content: between;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .news-meta {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 0.5rem;
+        }
+
+        .badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .badge-source {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .badge-quality {
+            background: #10b981;
+            color: white;
+        }
+
+        .badge-time {
+            background: #6b7280;
+            color: white;
+        }
+
+        .news-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #1e40af;
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+
+        .news-summary {
+            color: #4b5563;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .news-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-approve {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-approve:hover {
+            background: #059669;
+            transform: translateY(-1px);
+        }
+
+        .btn-reject {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-reject:hover {
+            background: #dc2626;
+            transform: translateY(-1px);
+        }
+
+        .btn-view {
+            background: #6b7280;
+            color: white;
+        }
+
+        .btn-view:hover {
+            background: #4b5563;
+        }
+
+        .btn-edit {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background: #d97706;
+        }
+
+        .btn-delete {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #dc2626;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #6b7280;
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .bulk-actions {
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .select-all {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .news-checkbox {
+            width: 18px;
+            height: 18px;
+            margin-right: 1rem;
+        }
+
+        .floating-fab {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .floating-fab:hover {
+            background: #1e40af;
+            transform: scale(1.1);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            color: #1e40af;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #6b7280;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 0.5rem;
+            }
+
+            .admin-tabs {
+                flex-direction: column;
+            }
+
+            .tab-button {
+                min-width: auto;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .news-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .news-actions {
+                justify-content: flex-start;
+            }
+
+            .bulk-actions {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 IA News - Painel Administrativo</h1>
+            <p>Gerencie suas notícias de qualquer lugar, em qualquer dispositivo</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="pending-count">8</div>
+                <div class="stat-label">Pendentes</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="published-count">5</div>
+                <div class="stat-label">Publicadas</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="rejected-count">2</div>
+                <div class="stat-label">Rejeitadas</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="avg-quality">8.7</div>
+                <div class="stat-label">Nota Média</div>
+            </div>
+        </div>
+
+        <div class="admin-tabs">
+            <button class="tab-button active" onclick="showTab('pending')">📋 Pendentes</button>
+            <button class="tab-button" onclick="showTab('published')">✅ Publicadas</button>
+            <button class="tab-button" onclick="showTab('rejected')">❌ Rejeitadas</button>
+            <button class="tab-button" onclick="showTab('settings')">⚙️ Configurações</button>
+        </div>
+
+        <!-- Tab: Pendentes -->
+        <div id="pending-tab" class="tab-content active">
+            <div class="section">
+                <div class="section-title">📋 Notícias Pendentes de Aprovação</div>
+                
+                <div class="bulk-actions">
+                    <div class="select-all">
+                        <input type="checkbox" id="select-all-pending" onchange="toggleSelectAll('pending')">
+                        <label for="select-all-pending">Selecionar todas</label>
+                    </div>
+                    <button class="btn btn-approve" onclick="bulkApprove('pending')">✅ Aprovar Selecionadas</button>
+                    <button class="btn btn-reject" onclick="bulkReject('pending')">❌ Rejeitar Selecionadas</button>
+                </div>
+
+                <div class="news-list" id="pending-news">
+                    <!-- Notícias pendentes serão carregadas aqui -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Publicadas -->
+        <div id="published-tab" class="tab-content">
+            <div class="section">
+                <div class="section-title">✅ Notícias Publicadas no Site</div>
+                
+                <div class="bulk-actions">
+                    <div class="select-all">
+                        <input type="checkbox" id="select-all-published" onchange="toggleSelectAll('published')">
+                        <label for="select-all-published">Selecionar todas</label>
+                    </div>
+                    <button class="btn btn-delete" onclick="bulkDelete('published')">🗑️ Remover Selecionadas</button>
+                </div>
+
+                <div class="news-list" id="published-news">
+                    <!-- Notícias publicadas serão carregadas aqui -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Rejeitadas -->
+        <div id="rejected-tab" class="tab-content">
+            <div class="section">
+                <div class="section-title">❌ Notícias Rejeitadas</div>
+                
+                <div class="bulk-actions">
+                    <div class="select-all">
+                        <input type="checkbox" id="select-all-rejected" onchange="toggleSelectAll('rejected')">
+                        <label for="select-all-rejected">Selecionar todas</label>
+                    </div>
+                    <button class="btn btn-approve" onclick="bulkApprove('rejected')">✅ Aprovar Selecionadas</button>
+                    <button class="btn btn-delete" onclick="bulkDelete('rejected')">🗑️ Excluir Permanentemente</button>
+                </div>
+
+                <div class="news-list" id="rejected-news">
+                    <!-- Notícias rejeitadas serão carregadas aqui -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab: Configurações -->
+        <div id="settings-tab" class="tab-content">
+            <div class="section">
+                <div class="section-title">⚙️ Configurações do Sistema</div>
+                
+                <div class="form-group">
+                    <label class="form-label">Nota Mínima para Auto-Aprovação</label>
+                    <input type="number" class="form-input" id="auto-approve-threshold" value="8.5" min="1" max="10" step="0.1">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Máximo de Notícias por Dia</label>
+                    <input type="number" class="form-input" id="max-daily-news" value="10" min="1" max="50">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Fontes Preferenciais (uma por linha)</label>
+                    <textarea class="form-textarea" id="preferred-sources" placeholder="TechCrunch&#10;Wired&#10;Nature&#10;MIT Technology Review"></textarea>
+                </div>
+                
+                <button class="btn btn-approve" onclick="saveSettings()">💾 Salvar Configurações</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Action Button -->
+    <button class="floating-fab" onclick="refreshData()" title="Atualizar dados">
+        🔄
+    </button>
+
+    <!-- Modal para visualizar/editar notícia -->
+    <div id="news-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modal-title">Visualizar Notícia</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div id="modal-body">
+                <!-- Conteúdo da notícia será carregado aqui -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dados simulados das notícias (em produção, viriam do GitHub)
+        let newsDatabase = {
+            pending: [
+                {
+                    id: 'p1',
+                    title: 'OpenAI anuncia GPT-5 com capacidades revolucionárias',
+                    summary: 'A nova versão promete melhor raciocínio, maior precisão e capacidades multimodais avançadas...',
+                    content: 'Conteúdo completo da notícia aqui...',
+                    source: 'TechCrunch',
+                    quality: 9.2,
+                    date: '2025-05-25',
+                    time: '14:30'
+                },
+                {
+                    id: 'p2',
+                    title: 'Google DeepMind resolve problema complexo de física quântica',
+                    summary: 'Pesquisadores usaram IA para descobrir novas propriedades de materiais quânticos...',
+                    content: 'Conteúdo completo da notícia aqui...',
+                    source: 'Nature',
+                    quality: 8.8,
+                    date: '2025-05-25',
+                    time: '12:15'
+                },
+                {
+                    id: 'p3',
+                    title: 'Microsoft integra IA avançada ao Office 365',
+                    summary: 'Nova atualização traz assistentes inteligentes para Word, Excel e PowerPoint...',
+                    content: 'Conteúdo completo da notícia aqui...',
+                    source: 'Microsoft Blog',
+                    quality: 8.5,
+                    date: '2025-05-25',
+                    time: '10:45'
+                }
+            ],
+            published: [
+                {
+                    id: 'pub1',
+                    title: 'Tesla apresenta robô humanoide com IA avançada',
+                    summary: 'Optimus Gen-3 demonstra capacidades impressionantes de interação...',
+                    source: 'Reuters',
+                    quality: 8.7,
+                    date: '2025-05-25',
+                    time: '08:00'
+                },
+                {
+                    id: 'pub2',
+                    title: 'Startup brasileira desenvolve IA para diagnóstico médico',
+                    summary: 'Empresa de São Paulo cria sistema que detecta doenças raras...',
+                    source: 'Folha de S.Paulo',
+                    quality: 8.9,
+                    date: '2025-05-25',
+                    time: '09:20'
+                }
+            ],
+            rejected: [
+                {
+                    id: 'r1',
+                    title: 'Rumores sobre nova IA da Apple',
+                    summary: 'Especulações não confirmadas sobre desenvolvimento interno...',
+                    source: 'Blog Tech',
+                    quality: 6.2,
+                    date: '2025-05-25',
+                    time: '07:30'
+                }
+            ]
+        };
+
+        // Estado da aplicação
+        let selectedItems = {
+            pending: new Set(),
+            published: new Set(),
+            rejected: new Set()
+        };
+
+        // Função para carregar notícias
+        function loadNews(category) {
+            const container = document.getElementById(`${category}-news`);
+            const news = newsDatabase[category];
+            
+            if (news.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">${getEmptyIcon(category)}</div>
+                        <p>Nenhuma notícia ${getCategoryName(category).toLowerCase()}</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = news.map(item => `
+                <div class="news-item">
+                    <div class="news-header">
+                        <input type="checkbox" class="news-checkbox" 
+                               onchange="toggleSelection('${category}', '${item.id}')" 
+                               id="check-${item.id}">
+                        <div style="flex: 1;">
+                            <div class="news-meta">
+                                <span class="badge badge-source">${item.source}</span>
+                                <span class="badge badge-quality">★ ${item.quality}</span>
+                                <span class="badge badge-time">${item.time}</span>
+                            </div>
+                            <div class="news-title">${item.title}</div>
+                        </div>
+                    </div>
+                    <div class="news-summary">${item.summary}</div>
+                    <div class="news-actions">
+                        ${getActionButtons(category, item.id)}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Função para obter botões de ação baseados na categoria
+        function getActionButtons(category, itemId) {
+            const baseButtons = `<button class="btn btn-view" onclick="viewNews('${category}', '${itemId}')">👁️ Ver</button>`;
+            
+            switch(category) {
+                case 'pending':
+                    return `
+                        ${baseButtons}
+                        <button class="btn btn-approve" onclick="approveNews('${itemId}')">✅ Aprovar</button>
+                        <button class="btn btn-reject" onclick="rejectNews('${itemId}')">❌ Rejeitar</button>
+                    `;
+                case 'published':
+                    return `
+                        ${baseButtons}
+                        <button class="btn btn-edit" onclick="editNews('${itemId}')">✏️ Editar</button>
+                        <button class="btn btn-delete" onclick="deleteNews('${itemId}')">🗑️ Remover</button>
+                    `;
+                case 'rejected':
+                    return `
+                        ${baseButtons}
+                        <button class="btn btn-approve" onclick="approveFromRejected('${itemId}')">✅ Aprovar</button>
+                        <button class="btn btn-delete" onclick="deleteNews('${itemId}')">🗑️ Excluir</button>
+                    `;
+                default:
+                    return baseButtons;
+            }
+        }
+
+        // Função para obter ícone vazio
+        function getEmptyIcon(category) {
+            const icons = {
+                pending: '📭',
+                published: '📰',
+                rejected: '🗑️'
+            };
+            return icons[category] || '📄';
+        }
+
+        // Função para obter nome da categoria
+        function getCategoryName(category) {
+            const names = {
+                pending: 'Pendentes',
+                published: 'Publicadas',
+                rejected: 'Rejeitadas'
+            };
+            return names[category] || category;
+        }
+
+        // Função para alternar abas
+        function showTab(tabName) {
+            // Remover active de todas as abas
+            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            // Ativar aba selecionada
+            event.target.classList.add('active');
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+            
+            // Carregar dados da aba
+            if (tabName !== 'settings') {
+                loadNews(tabName);
+            }
+        }
+
+        // Função para alternar seleção
+        function toggleSelection(category, itemId) {
+            if (selectedItems[category].has(itemId)) {
+                selectedItems[category].delete(itemId);
+            } else {
+                selectedItems[category].add(itemId);
+            }
+        }
+
+        // Função para selecionar todas
+        function toggleSelectAll(category) {
+            const isChecked = document.getElementById(`select-all-${category}`).checked;
+            const checkboxes = document.querySelectorAll(`#${category}-tab .news-checkbox`);
+            
+            selectedItems[category].clear();
+            
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = isChecked;
+                if (isChecked) {
+                    const itemId = checkbox.id.replace('check-', '');
+                    selectedItems[category].add(itemId);
+                }
+            });
+        }
+
+        // Ações individuais
+        function approveNews(itemId) {
+            const news = newsDatabase.pending.find(n => n.id === itemId);
+            if (news) {
+                // Mover para publicadas
+                news.id = 'pub' + Date.now();
+                newsDatabase.published.push(news);
+                newsDatabase.pending = newsDatabase.pending.filter(n => n.id !== itemId);
+                
+                updateStats();
+                loadNews('pending');
+                showSuccessMessage('Notícia aprovada e publicada!');
+            }
+        }
+
+        function rejectNews(itemId) {
+            const news = newsDatabase.pending.find(n => n.id === itemId);
+            if (news) {
+                // Mover para rejeitadas
+                news.id = 'r' + Date.now();
+                newsDatabase.rejected.push(news);
+                newsDatabase.pending = newsDatabase.pending.filter(n => n.id !== itemId);
+                
+                updateStats();
+                loadNews('pending');
+                showSuccessMessage('Notícia rejeitada');
+            }
+        }
+
+        function deleteNews(itemId) {
+            if (confirm('Tem certeza que deseja excluir esta notícia permanentemente?')) {
+                // Remover de todas as categorias
+                Object.keys(newsDatabase).forEach(category => {
+                    newsDatabase[category] = newsDatabase[category].filter(n => n.id !== itemId);
+                });
+                
+                updateStats();
+                loadNews('published');
+                loadNews('rejected');
+                showSuccessMessage('Notícia excluída permanentemente');
+            }
+        }
+
+        function approveFromRejected(itemId) {
+            const news = newsDatabase.rejected.find(n => n.id === itemId);
+            if (news) {
+                // Mover para publicadas
+                news.id = 'pub' + Date.now();
+                newsDatabase.published.push(news);
+                newsDatabase.rejected = newsDatabase.rejected.filter(n => n.id !== itemId);
+                
+                updateStats();
+                loadNews('rejected');
+                showSuccessMessage('Notícia aprovada e publicada!');
+            }
+        }
+
+        // Ações em lote
+        function bulkApprove(category) {
+            const selected = Array.from(selectedItems[category]);
+            if (selected.length === 0) {
+                alert('Selecione pelo menos uma notícia');
+                return;
+            }
+            
+            selected.forEach(itemId => {
+                if (category === 'pending') {
+                    approveNews(itemId);
+                } else if (category === 'rejected') {
+                    approveFromRejected(itemId);
+                }
+            });
+            
+            selectedItems[category].clear();
+            document.getElementById(`select-all-${category}`).checked = false;
+        }
+
+        function bulkReject(category) {
+            const selected = Array.from(selectedItems[category]);
+            if (selected.length === 0) {
+                alert('Selecione pelo menos uma notícia');
+                return;
+            }
+            
+            selected.forEach(itemId => {
+                rejectNews(itemId);
+            });
+            
+            selectedItems[category].clear();
+            document.getElementById(`select-all-${category}`).checked = false;
+        }
+
+        function bulkDelete(category) {
+            const selected = Array.from(selectedItems[category]);
+            if (selected.length === 0) {
+                alert('Selecione pelo menos uma notícia');
+                return;
+            }
+            
+            if (confirm(`Tem certeza que deseja excluir ${selected.length} notícias permanentemente?`)) {
+                selected.forEach(itemId => {
+                    deleteNews(itemId);
+                });
+                
+                selectedItems[category].clear();
+                document.getElementById(`select-all-${category}`).checked = false;
+            }
+        }
+
+        // Função para visualizar notícia
+        function viewNews(category, itemId) {
+            const news = newsDatabase[category].find(n => n.id === itemId);
+            if (news) {
+                document.getElementById('modal-title').textContent = news.title;
+                document.getElementById('modal-body').innerHTML = `
+                    <div class="news-meta" style="margin-bottom: 1rem;">
+                        <span class="badge badge-source">${news.source}</span>
+                        <span class="badge badge-quality">★ ${news.quality}</span>
+                        <span class="badge badge-time">${news.date} às ${news.time}</span>
+                    </div>
+                    <div style="margin-bottom: 1rem;">
+                        <strong>Resumo:</strong><br>
+                        ${news.summary}
+                    </div>
+                    <div>
+                        <strong>Conteúdo:</strong><br>
+                        ${news.content || 'Conteúdo completo não disponível.'}
+                    </div>
+                `;
+                document.getElementById('news-modal').style.display = 'block';
+            }
+        }
+
+        function editNews(itemId) {
+            viewNews('published', itemId);
+            // Em implementação real, permitiria editar
+        }
+
+        function closeModal() {
+            document.getElementById('news-modal').style.display = 'none';
+        }
+
+        // Função para atualizar estatísticas
+        function updateStats() {
+            document.getElementById('pending-count').textContent = newsDatabase.pending.length;
+            document.getElementById('published-count').textContent = newsDatabase.published.length;
+            document.getElementById('rejected-count').textContent = newsDatabase.rejected.length;
+            
+            const allNews = [...newsDatabase.pending, ...newsDatabase.published, ...newsDatabase.rejected];
+            const avgQuality = allNews.length > 0 
+                ? (allNews.reduce((sum, news) => sum + news.quality, 0) / allNews.length).toFixed(1)
+                : '0.0';
+            document.getElementById('avg-quality').textContent = avgQuality;
+        }
+
+        // Função para mostrar mensagem de sucesso
+        function showSuccessMessage(message) {
+            // Criar notificação temporária
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #10b981;
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 8px;
+                box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+                z-index: 10000;
+                font-weight: 600;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                document.body.removeChild(notification);
+            }, 3000);
+        }
+
+        // Função para atualizar dados
+        function refreshData() {
+            // Simular carregamento
+            const fab = document.querySelector('.floating-fab');
+            fab.style.transform = 'rotate(360deg)';
+            
+            setTimeout(() => {
+                updateStats();
+                const activeTab = document.querySelector('.tab-content.active').id.replace('-tab', '');
+                if (activeTab !== 'settings') {
+                    loadNews(activeTab);
+                }
+                fab.style.transform = 'rotate(0deg)';
+                showSuccessMessage('Dados atualizados!');
+            }, 1000);
+        }
+
+        // Função para salvar configurações
+        function saveSettings() {
+            const threshold = document.getElementById('auto-approve-threshold').value;
+            const maxDaily = document.getElementById('max-daily-news').value;
+            const sources = document.getElementById('preferred-sources').value;
+            
+            // Em implementação real, salvaria no GitHub
+            showSuccessMessage('Configurações salvas com sucesso!');
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            updateStats();
+            loadNews('pending');
+            
+            // Fechar modal clicando fora
+            window.onclick = function(event) {
+                const modal = document.getElementById('news-modal');
+                if (event.target === modal) {
+                    closeModal();
+                }
+            }
+        });
+
+        // Atalhos de teclado
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
